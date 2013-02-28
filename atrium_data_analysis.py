@@ -20,7 +20,8 @@ class Photo:
         self.dictList = dictList
         self.numPeople = 0
         self.numGroups = 0
-        self.dayDate = self.exactDate[:3]
+        self.dayDate = (int(exactDate[0]), int(exactDate[1]), int(exactDate[2]))
+        self.dayDateString = str(exactDate[0]) + " " + month[int(exactDate[1])] + " " + str(exactDate[2])
         self.personList = []
         self.groupList = []
     
@@ -69,7 +70,7 @@ class Person:
 def readFiles(path):
     allDictList = []
     for file in os.listdir(path):   
-        print "reading" + str(file)
+        #print "reading" + str(file)
         for dicty in parseFile(path + "\\" + file):
             allDictList.append(dicty)
     
@@ -93,11 +94,13 @@ def readFiles(path):
         photo = Photo(keyList[i], masterDict[keyList[i]])
         allPhotoList.append(photo)
         analyzePhoto(photo)     
-        print "analyzing photo from " + str(photo.exactDate)
+        #print "analyzing photo from " + str(photo.exactDate)
         i += 1
             
     peoplePerPhoto(allPhotoList)
     groupsPerPhoto(allPhotoList)
+    peoplePerDay(allPhotoList)
+    groupsPerDay(allPhotoList)
 
     
 # input: a filename (string)
@@ -168,6 +171,35 @@ def peoplePerPhoto(photoList):
     
     workbook.save("C:\Users\Nicole\Documents\UROP 2013\peoplePerPhoto.xls")
 
+def peoplePerDay(photoList):
+    excelList = []
+    currentDate = photoList[0].dayDateString
+    currentNumPeople = 0
+    excelList.append((currentDate, currentNumPeople))
+    i = 0
+    for photo in photoList:
+        if photo.dayDateString == currentDate:
+            currentNumPeople += photo.numPeople 
+            excelList[i] = (currentDate, currentNumPeople)
+        else:
+            currentDate = photo.dayDateString
+            currentNumPeople = photo.numPeople
+            excelList.append((currentDate, currentNumPeople))
+            i += 1
+            
+    workbook = Workbook()
+    sheet = workbook.add_sheet("peoplePerPDay")
+    sheet.write(0, 0, "date")
+    sheet.write(0, 1, "number of people")
+    
+    r = 1
+    for item in excelList:
+        sheet.write(r, 0, item[0])
+        sheet.write(r, 1, item[1])
+        r += 1
+    
+    workbook.save("C:\Users\Nicole\Documents\UROP 2013\peoplePerDay.xls")
+
 def groupsPerPhoto(photoList):
     excelList = []
     for photo in photoList:
@@ -185,6 +217,35 @@ def groupsPerPhoto(photoList):
         r += 1
     
     workbook.save("C:\Users\Nicole\Documents\UROP 2013\groupsPerPhoto.xls")
+
+def groupsPerDay(photoList):
+    excelList = []
+    currentDate = photoList[0].dayDateString
+    currentNumGroups = 0
+    excelList.append((currentDate, currentNumGroups))
+    i = 0
+    for photo in photoList:
+        if photo.dayDateString == currentDate:
+            currentNumGroups += photo.numGroups 
+            excelList[i] = (currentDate, currentNumGroups)
+        else:
+            currentDate = photo.dayDateString
+            currentNumGroups = photo.numGroups
+            excelList.append((currentDate, currentNumGroups))
+            i += 1
+            
+    workbook = Workbook()
+    sheet = workbook.add_sheet("groupsPerPDay")
+    sheet.write(0, 0, "date")
+    sheet.write(0, 1, "number of groups")
+    
+    r = 1
+    for item in excelList:
+        sheet.write(r, 0, item[0])
+        sheet.write(r, 1, item[1])
+        r += 1
+    
+    workbook.save("C:\Users\Nicole\Documents\UROP 2013\groupsPerDay.xls")
     
 # this is a generic function to help with calculating statistics on the dataset
 # specific functions could be written instead
