@@ -1,67 +1,7 @@
-##Atrium Photo analysis
 import os
 #from datetime import datetime
 from xlwt.Workbook import *
-
-#gathers info from photos across a full day
-class Day:
-    def __init__(self, day):
-        self.day = day
-        self.photoList = []
-        
-    def addPhoto(self, photo):
-        self.photoList.append(photo)
-
-#stores info of a single photo      
-class Photo:
-    def __init__(self, exactDate, dictList):
-        month = ["", "Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
-        self.exactDate = str(exactDate[0]) + " " + month[int(exactDate[1])] + " " + str(exactDate[2]) + " " + str(exactDate[3]) + ":" + str(exactDate[4])
-        self.dictList = dictList
-        self.numPeople = 0
-        self.numGroups = 0
-        self.dayDate = (int(exactDate[0]), int(exactDate[1]), int(exactDate[2]))
-        self.dayDateString = str(exactDate[0]) + " " + month[int(exactDate[1])] + " " + str(exactDate[2])
-        self.personList = []
-        self.groupList = []
-    
-    def addPerson(self, person):
-        self.personList.append(person)
-        self.numPeople += 1
-    
-    def addGroup(self, group):
-        self.groupList.append(group)
-        self.numGroups += 1
-
-    def __str__(self):
-         return self.exactDate.toString()       
-
-#knows number of people in it, and which people     
-class Group:
-    def __init__(self, dicty):
-        self.minX = dicty["x"]
-        self.minY = dicty["y"]
-        self.maxX = dicty["x"] + dicty["width"]
-        self.maxY = dicty["y"] + dicty["height"]
-        self.numPeople = 0
-        self.personList = []
-        
-    def addPerson(self, person):
-        self.personList.append(person)
-        self.numPeople += 1
-        
-    def isPersoninGroup(self, person):
-        if person.midX >= self.minX and person.midX <= maxX and person.midY >= self.minY and person.midY <= self.maxY:
-            return true
-        else:
-            return false
-
-#knows center point of person
-class Person:
-    def __init__(self, dicty):
-        self.midX = float(dicty["x"]) + float(dicty["width"]) / 2.0
-        self.midY = float(dicty["y"]) + float(dicty["height"]) / 2.0
-        
+from atrium_objects import *       
     
 
 # input: directory path(string)
@@ -115,11 +55,7 @@ def parseFile(filePath):
     
     fileObjectDicts = []
     for line in noDuplicates:
-        fileObjectDicts.append(tokenize(line))      
-    
-   # dict = fileObjectDicts[0]
-   # exactDate = (dict["year"], dict["month"], dict["day"], dict["hour"], dict["minute"])
-   # photo = Photo(fileObjectDicts, exactDate)
+        fileObjectDicts.append(tokenize(line))
         
     return fileObjectDicts
 
@@ -129,7 +65,7 @@ separators = [',', '_', '.']
 # save tokens in a dictionary, and returns it
 def tokenize(string):
     tokensList = []  
-    token = ''    #keeps track of a single element
+    token = ''    #keeps track of a single elt
     for x in string:
         if x in separators:
             if token != '':  #add nonempty token when a separator is reached, then reset token
@@ -151,6 +87,16 @@ def analyzePhoto(photo):
             photo.addPerson(Person(dicty))
         elif dicty["ID"] == "2":
             photo.addGroup(Group(dicty))
+        elif dicty["ID"] == "3":
+            photo.addSmallChair(Small_Chair(dicty))
+        elif dicty["ID"] == "4":
+            photo.addSofa(Sofa(dicty))
+        elif dicty["ID"] == "5":
+            photo.addSmallTable(Small_Table(dicty))
+        elif dicty["ID"] == "6":
+            photo.addLargeTable(Large_Table(dicty))
+        elif dicty["ID"] == "7":
+            photo.addPingPongTable(Ping_Pong_Table(dicty))
                         
 
 def peoplePerPhoto(photoList):
@@ -246,23 +192,25 @@ def groupsPerDay(photoList):
         r += 1
     
     workbook.save("C:\Users\Nicole\Documents\UROP 2013\groupsPerDay.xls")
-    
-# this is a generic function to help with calculating statistics on the dataset
-# specific functions could be written instead
-# input: data: list of dictionaries, fun: a lambda function that takes in a dictionary and outputs a number
-# returns: a list of numbers that were obtained by applying fun on each element in data
-def calculateStat(data, fun):
-    
-    pass
 
+def peoplePerGroup(photoList):
+    excelList = []
+    for photo in photoList:
+        excelList.append((photo.exactDate, photo.numGroups))
     
-# generates an Excel spreadsheet
-# input: a list of lists or dictionaries to put in the spreadsheet
-# each first-level list is a sheet in Excel
-# example usage: outputToExcel(calculateStat(allData, *function that calculates average of X*), calculateStat(allData, *function that calculates average of Y*))
-def outputToExel(data):
+    workbook = Workbook()
+    sheet = workbook.add_sheet("peoplePerGroup")
+    sheet.write(0, 0, "date")
+    sheet.write(0, 1, "number of groups")
+    
+    r = 1
+    for item in excelList:
+        sheet.write(r, 0, item[0])
+        sheet.write(r, 1, item[1])
+        r += 1
+    
+    workbook.save("C:\Users\Nicole\Documents\UROP 2013\peoplePerGroup.xls")
     pass
-    
 
 
 readFiles("C:\Users\Nicole\Documents\UROP 2013\data")
