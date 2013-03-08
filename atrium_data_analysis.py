@@ -41,6 +41,9 @@ def readFiles(path):
     groupsPerPhoto(allPhotoList)
     peoplePerDay(allPhotoList)
     groupsPerDay(allPhotoList)
+    averagePeoplePerGroupPerPhoto(allPhotoList)
+    peopleUsingSmallChairsPerPhoto(allPhotoList)
+    peopleUsingSofasPerPhoto(allPhotoList)
 
     
 # input: a filename (string)
@@ -82,21 +85,56 @@ def tokenize(string):
 
 
 def analyzePhoto(photo):
+    #determine what objects are in the photo
     for dicty in photo.dictList:
         if dicty["ID"] == '1':
             photo.addPerson(Person(dicty))
         elif dicty["ID"] == "2":
             photo.addGroup(Group(dicty))
         elif dicty["ID"] == "3":
-            photo.addSmallChair(Small_Chair(dicty))
+            photo.addChair(Chair(dicty))
         elif dicty["ID"] == "4":
             photo.addSofa(Sofa(dicty))
         elif dicty["ID"] == "5":
             photo.addSmallTable(Small_Table(dicty))
         elif dicty["ID"] == "6":
             photo.addLargeTable(Large_Table(dicty))
-        elif dicty["ID"] == "7":
-            photo.addPingPongTable(Ping_Pong_Table(dicty))
+##        elif dicty["ID"] == "7":
+##            photo.addPingPongTable(Ping_Pong_Table(dicty))
+    #determine which group a person is in, and what furniture theyre using
+    for person in photo.personList:
+        for group in photo.groupList:
+            if group.isInGroup(person):
+                group.addPerson(person)
+        for chair in photo.chairList:
+            if chair.usingChair(person):
+                chair.addPerson(person)
+        for sofa in photo.sofaList:
+            if sofa.usingSofa(person):
+                sofa.addPerson(person)
+        for smallTable in photo.smallTableList:
+            if smallTable.usingSmallTable(person):
+                smallTable.addPerson(person)
+        for largeTable in photo.largeTableList:
+            if largeTable.usingLargeTable(person):
+                largeTable.addPerson(person)
+    #determine which furniture group is using
+    for group in photo.groupList:
+        for chair in photo.chairList:
+            if chair.usingChair(group):
+                chair.addGroup(group)
+        for sofa in photo.sofaList:
+            if sofa.usingSofa(group):
+                sofa.addGroup(group)
+        for smallTable in photo.smallTableList:
+            if smallTable.usingSmallTable(group):
+                smallTable.addGroup(group)
+    for largeTable in photo.largeTableList:
+        for group in photo.groupList:
+            if group.isInGroup(largeTable):
+                largeTable.addGroup(group)
+            
+                               
                         
 
 def peoplePerPhoto(photoList):
@@ -193,15 +231,21 @@ def groupsPerDay(photoList):
     
     workbook.save("C:\Users\Nicole\Documents\UROP 2013\groupsPerDay.xls")
 
-def peoplePerGroup(photoList):
+def averagePeoplePerGroupPerPhoto(photoList):
     excelList = []
     for photo in photoList:
-        excelList.append((photo.exactDate, photo.numGroups))
+        totalPeopleinGroups = 0
+        for group in photo.groupList:
+            totalPeopleinGroups += group.numPeople
+        averagePeoplePerGroup = 0
+        if photo.numGroups != 0:
+            averagePeoplePerGroup = float(totalPeopleinGroups)/photo.numGroups
+        excelList.append((photo.exactDate, averagePeoplePerGroup))
     
     workbook = Workbook()
     sheet = workbook.add_sheet("peoplePerGroup")
     sheet.write(0, 0, "date")
-    sheet.write(0, 1, "number of groups")
+    sheet.write(0, 1, "average people per group")
     
     r = 1
     for item in excelList:
@@ -209,8 +253,49 @@ def peoplePerGroup(photoList):
         sheet.write(r, 1, item[1])
         r += 1
     
-    workbook.save("C:\Users\Nicole\Documents\UROP 2013\peoplePerGroup.xls")
-    pass
+    workbook.save("C:\Users\Nicole\Documents\UROP 2013\AveragePeoplePerGroupPerPhoto.xls")
+
+def peopleUsingSmallChairsPerPhoto(photoList):
+    excelList = []
+    for photo in photoList:
+        totalPeopleinChairs = 0
+        for chair in photo.chairList:
+            totalPeopleinChairs += chair.numPeople
+        excelList.append((photo.exactDate, totalPeopleinChairs))
+    
+    workbook = Workbook()
+    sheet = workbook.add_sheet("peopleUsingChairs")
+    sheet.write(0, 0, "date")
+    sheet.write(0, 1, "number of people using chairs")
+    
+    r = 1
+    for item in excelList:
+        sheet.write(r, 0, item[0])
+        sheet.write(r, 1, item[1])
+        r += 1
+    
+    workbook.save("C:\Users\Nicole\Documents\UROP 2013\peopleUsingChairsPerPhoto.xls")
+
+def peopleUsingSofasPerPhoto(photoList):
+    excelList = []
+    for photo in photoList:
+        totalPeopleinSofas = 0
+        for sofa in photo.sofaList:
+            totalPeopleinSofas += sofa.numPeople
+        excelList.append((photo.exactDate, totalPeopleinSofas))
+    
+    workbook = Workbook()
+    sheet = workbook.add_sheet("peopleUsingChairs")
+    sheet.write(0, 0, "date")
+    sheet.write(0, 1, "number of people using sofaa")
+    
+    r = 1
+    for item in excelList:
+        sheet.write(r, 0, item[0])
+        sheet.write(r, 1, item[1])
+        r += 1
+    
+    workbook.save("C:\Users\Nicole\Documents\UROP 2013\peopleUsingSofasPerPhoto.xls")
 
 
 readFiles("C:\Users\Nicole\Documents\UROP 2013\data")
