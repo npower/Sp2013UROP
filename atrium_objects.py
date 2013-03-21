@@ -10,18 +10,18 @@ class Day:
 #stores info of a single photo      
 class Photo:
     def __init__(self, exactDate, dictList):
-        month = ["", "Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
-        stringMinutes = "00"
-        if len(exactDate[4]) < 2:
-            stringMinutes = "0" + str(exactDate[4])
-        else:
-            stringMinutes = str(exactDate[4])
-        self.exactDate = str(exactDate[0]) + " " + month[int(exactDate[1])] + " " + str(exactDate[2]) + " " + str(exactDate[3]) + ":" + str(exactDate[4])
+##        month = ["", "Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
+##        stringMinutes = "00"
+##        if exactDate[4] < 2:
+##            stringMinutes = "0" + str(exactDate[4])
+##        else:
+##            stringMinutes = str(exactDate[4])
+##        self.exactDate = str(exactDate[0]) + " " + month[int(exactDate[1])] + " " + str(exactDate[2]) + " " + str(exactDate[3]) + ":" + stringMinutes
+        self.exactDate = exactDate
         self.dictList = dictList
         self.numPeople = 0
         self.numGroups = 0        
-        self.dayDate = (int(exactDate[0]), int(exactDate[1]), int(exactDate[2]))
-        self.dayDateString = str(exactDate[0]) + " " + month[int(exactDate[1])] + " " + str(exactDate[2])
+        self.dayDate = exactDate.date()
         self.personList = []
         self.groupList = []
         self.chairList = []
@@ -84,6 +84,11 @@ class Person:
     def __init__(self, dicty):
         self.midX = float(dicty["x"]) + float(dicty["width"]) / 2.0
         self.midY = float(dicty["y"]) + float(dicty["height"]) / 2.0
+        self.minX = int(dicty["x"])
+        self.minY = int(dicty["y"])
+        self.maxX = int(dicty["x"]) + int(dicty["width"])
+        self.maxY = int(dicty["y"]) + int(dicty["height"])
+        
 
 class Chair:
     def __init__(self, dicty):
@@ -137,10 +142,10 @@ class Sofa:
 
 class Small_Table:
     def __init__(self, dicty):
-        self.minX = dicty["x"]
-        self.minY = dicty["y"]
-        self.maxX = dicty["x"] + dicty["width"]
-        self.maxY = dicty["y"] + dicty["height"]
+        self.minX = int(dicty["x"])
+        self.minY = int(dicty["y"])
+        self.maxX = int(dicty["x"]) + int(dicty["width"])
+        self.maxY = int(dicty["y"]) + int(dicty["height"])
         self.numPeople = 0
         self.numGroups = 0
         self.personList = []
@@ -183,6 +188,8 @@ class Large_Table:
         
     def usingLargeTable(self, thing):
         if thing.midX >= self.minX and thing.midX <= self.maxX and thing.midY >= self.minY and thing.midY <= self.maxY:
+            return True
+        elif self.midX >= thing.minX and self.midX <= thing.maxX and self.midY >= thing.minY and self.midY <= thing.maxY:
             return True
         else:
             return False

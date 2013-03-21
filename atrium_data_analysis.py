@@ -1,5 +1,5 @@
 import os
-#from datetime import datetime
+from datetime import *
 from xlwt.Workbook import *
 from atrium_objects import *       
     
@@ -16,7 +16,7 @@ def readFiles(path):
     
     masterDict = {}
     for dicty in allDictList:
-        date = (int(dicty["year"]), int(dicty["month"]), int(dicty["day"]), int(dicty["hour"]), int(dicty["minute"]))
+        date = datetime(int(dicty["year"]), int(dicty["month"]), int(dicty["day"]), int(dicty["hour"]), int(dicty["minute"]))
         if date in masterDict:
             masterDict[date].append(dicty)
         else:
@@ -25,26 +25,37 @@ def readFiles(path):
     keyList = []
     for key in masterDict:
         keyList.append(key)
-    
-    keyList.sort()
+
+    keyList.sort()                                
     
     allPhotoList = []
     i = 0
+    emptyDict = {}
     while i < len(keyList):
-        photo = Photo(keyList[i], masterDict[keyList[i]])
+        if keyList[i] in masterDict:
+            photo = Photo(keyList[i], masterDict[keyList[i]])
+        else:
+            photo = Photo(keyList[i], emptyDict)
         allPhotoList.append(photo)
         analyzePhoto(photo)     
         #print "analyzing photo from " + str(photo.exactDate)
         i += 1
+    
+    workbook = Workbook()
             
-    peoplePerPhoto(allPhotoList)
-    groupsPerPhoto(allPhotoList)
-    peoplePerDay(allPhotoList)
-    groupsPerDay(allPhotoList)
-    averagePeoplePerGroupPerPhoto(allPhotoList)
-    peopleUsingSmallChairsPerPhoto(allPhotoList)
-    peopleUsingSofasPerPhoto(allPhotoList)
-
+    peoplePerPhoto(allPhotoList, workbook)
+    groupsPerPhoto(allPhotoList, workbook)
+    peoplePerDay(allPhotoList, workbook)
+    groupsPerDay(allPhotoList, workbook)
+    averagePeoplePerGroupPerPhoto(allPhotoList, workbook)
+    peopleUsingSmallChairsPerPhoto(allPhotoList, workbook)
+    peopleUsingSofasPerPhoto(allPhotoList, workbook)
+    peopleUsingSmallTablesPerPhoto(allPhotoList, workbook)
+    peopleUsingLargeTablesPerPhoto(allPhotoList, workbook)
+    groupsUsingSofasPerPhoto(allPhotoList, workbook)
+    groupsUsingSmallChairsPerPhoto(allPhotoList, workbook)
+    groupsUsingSmallTablesPerPhoto(allPhotoList, workbook)
+    groupsUsingLargeTablesPerPhoto(allPhotoList, workbook)
     
 # input: a filename (string)
 # opens the file, goes through all the lines and extracts the fields
@@ -115,9 +126,9 @@ def analyzePhoto(photo):
         for smallTable in photo.smallTableList:
             if smallTable.usingSmallTable(person):
                 smallTable.addPerson(person)
-        for largeTable in photo.largeTableList:
-            if largeTable.usingLargeTable(person):
-                largeTable.addPerson(person)
+##        for largeTable in photo.largeTableList:
+##            if largeTable.usingLargeTable(person):
+##                largeTable.addPerson(person)
     #determine which furniture group is using
     for group in photo.groupList:
         for chair in photo.chairList:
@@ -129,109 +140,95 @@ def analyzePhoto(photo):
         for smallTable in photo.smallTableList:
             if smallTable.usingSmallTable(group):
                 smallTable.addGroup(group)
-    for largeTable in photo.largeTableList:
-        for group in photo.groupList:
+        for largeTable in photo.largeTableList:
             if group.isInGroup(largeTable):
                 largeTable.addGroup(group)
-            
-                               
-                        
+                for person in group.personList:
+                    largeTable.addPerson(person)
 
-def peoplePerPhoto(photoList):
+def writeToExcel(workbook, sheetName, column1name, column2name, excelList):
+    ##excelList is a lit of (photo.exactDate, attribute) tuples
+    sheet = workbook.add_sheet(sheetName)
+    sheet.write(0, 0, column1name)
+    sheet.write(0, 1, column2name)
+    
+    r = 1
+    prev = None
+    for item in excelList:
+        current = item[0]        
+        if prev != None and  current - prev >= timedelta(minutes=30):
+            difference = current - prev
+            numExtras = difference.total_seconds()/(60*25) - 1
+            i = 0
+            while i < numExtras:
+                sheet.write(r, 0, str(prev + timedelta(minutes = 15)))
+                sheet.write(r, 1, 0)
+                prev = prev + timedelta(minutes = 15)
+                r += 1
+                i += 1
+        sheet.write(r, 0, str(item[0]))
+        sheet.write(r, 1, item[1])
+        r += 1
+        prev = current
+
+    workbook.save("C:\Users\Nicole\Documents\UROP2013\AtriumData.xls")           
+
+                               
+def peoplePerPhoto(photoList, workbook):
     excelList = []
     for photo in photoList:
         excelList.append((photo.exactDate, photo.numPeople))
-    
-    workbook = Workbook()
-    sheet = workbook.add_sheet("peoplePerPhoto")
-    sheet.write(0, 0, "date")
-    sheet.write(0, 1, "number of people")
-    
-    r = 1
-    for item in excelList:
-        sheet.write(r, 0, item[0])
-        sheet.write(r, 1, item[1])
-        r += 1
-    
-    workbook.save("C:\Users\Nicole\Documents\UROP 2013\peoplePerPhoto.xls")
 
-def peoplePerDay(photoList):
+    writeToExcel(workbook, "peoplePerPhoto", "Date", "number of people per photo", excelList)
+    
+    
+def peoplePerDay(photoList, workbook):
     excelList = []
-    currentDate = photoList[0].dayDateString
+    currentDate = photoList[0].dayDate
     currentNumPeople = 0
     excelList.append((currentDate, currentNumPeople))
     i = 0
     for photo in photoList:
-        if photo.dayDateString == currentDate:
+        if photo.dayDate == currentDate:
             currentNumPeople += photo.numPeople 
             excelList[i] = (currentDate, currentNumPeople)
         else:
-            currentDate = photo.dayDateString
+            currentDate = photo.dayDate
             currentNumPeople = photo.numPeople
             excelList.append((currentDate, currentNumPeople))
             i += 1
-            
-    workbook = Workbook()
-    sheet = workbook.add_sheet("peoplePerPDay")
-    sheet.write(0, 0, "date")
-    sheet.write(0, 1, "number of people")
-    
-    r = 1
-    for item in excelList:
-        sheet.write(r, 0, item[0])
-        sheet.write(r, 1, item[1])
-        r += 1
-    
-    workbook.save("C:\Users\Nicole\Documents\UROP 2013\peoplePerDay.xls")
 
-def groupsPerPhoto(photoList):
+    writeToExcel(workbook, "peoplePerDay", "Date", "number of people per day", excelList)
+    
+    
+def groupsPerPhoto(photoList, workbook):
     excelList = []
     for photo in photoList:
         excelList.append((photo.exactDate, photo.numGroups))
-    
-    workbook = Workbook()
-    sheet = workbook.add_sheet("groupsPerPhoto")
-    sheet.write(0, 0, "date")
-    sheet.write(0, 1, "number of groups")
-    
-    r = 1
-    for item in excelList:
-        sheet.write(r, 0, item[0])
-        sheet.write(r, 1, item[1])
-        r += 1
-    
-    workbook.save("C:\Users\Nicole\Documents\UROP 2013\groupsPerPhoto.xls")
 
-def groupsPerDay(photoList):
+    writeToExcel(workbook, "groupsPerPhoto", "Date", "number of groups per photo", excelList)
+    
+    
+def groupsPerDay(photoList, workbook):
     excelList = []
-    currentDate = photoList[0].dayDateString
+    currentDate = photoList[0].dayDate
     currentNumGroups = 0
     excelList.append((currentDate, currentNumGroups))
     i = 0
     for photo in photoList:
-        if photo.dayDateString == currentDate:
+        if photo.dayDate == currentDate:
             currentNumGroups += photo.numGroups 
             excelList[i] = (currentDate, currentNumGroups)
         else:
-            currentDate = photo.dayDateString
+            currentDate = photo.dayDate
             currentNumGroups = photo.numGroups
             excelList.append((currentDate, currentNumGroups))
             i += 1
-            
-    workbook = Workbook()
-    sheet = workbook.add_sheet("groupsPerPDay")
-    sheet.write(0, 0, "date")
-    sheet.write(0, 1, "number of groups")
-    
-    r = 1
-    for item in excelList:
-        sheet.write(r, 0, item[0])
-        sheet.write(r, 1, item[1])
-        r += 1
-    
-    workbook.save("C:\Users\Nicole\Documents\UROP 2013\groupsPerDay.xls")
 
-def averagePeoplePerGroupPerPhoto(photoList):
+    writeToExcel(workbook, "groupsPerDay", "Date", "number of groups per day", excelList)
+    
+
+def averagePeoplePerGroupPerPhoto(photoList, workbook):
     excelList = []
     for photo in photoList:
         totalPeopleinGroups = 0
@@ -241,61 +238,95 @@ def averagePeoplePerGroupPerPhoto(photoList):
         if photo.numGroups != 0:
             averagePeoplePerGroup = float(totalPeopleinGroups)/photo.numGroups
         excelList.append((photo.exactDate, averagePeoplePerGroup))
-    
-    workbook = Workbook()
-    sheet = workbook.add_sheet("peoplePerGroup")
-    sheet.write(0, 0, "date")
-    sheet.write(0, 1, "average people per group")
-    
-    r = 1
-    for item in excelList:
-        sheet.write(r, 0, item[0])
-        sheet.write(r, 1, item[1])
-        r += 1
-    
-    workbook.save("C:\Users\Nicole\Documents\UROP 2013\AveragePeoplePerGroupPerPhoto.xls")
 
-def peopleUsingSmallChairsPerPhoto(photoList):
+    writeToExcel(workbook, "peoplePerGroup", "Date", "average people per group per photo", excelList)
+    
+    
+def peopleUsingSmallChairsPerPhoto(photoList, workbook):
     excelList = []
     for photo in photoList:
         totalPeopleinChairs = 0
         for chair in photo.chairList:
             totalPeopleinChairs += chair.numPeople
         excelList.append((photo.exactDate, totalPeopleinChairs))
-    
-    workbook = Workbook()
-    sheet = workbook.add_sheet("peopleUsingChairs")
-    sheet.write(0, 0, "date")
-    sheet.write(0, 1, "number of people using chairs")
-    
-    r = 1
-    for item in excelList:
-        sheet.write(r, 0, item[0])
-        sheet.write(r, 1, item[1])
-        r += 1
-    
-    workbook.save("C:\Users\Nicole\Documents\UROP 2013\peopleUsingChairsPerPhoto.xls")
 
-def peopleUsingSofasPerPhoto(photoList):
+    writeToExcel(workbook, "peopleUsingChairs", "Date", "number of people using chairs per photo", excelList)
+    
+
+def peopleUsingSofasPerPhoto(photoList, workbook):
     excelList = []
     for photo in photoList:
         totalPeopleinSofas = 0
         for sofa in photo.sofaList:
             totalPeopleinSofas += sofa.numPeople
         excelList.append((photo.exactDate, totalPeopleinSofas))
+
+    writeToExcel(workbook, "peopleUsingSofas", "Date", "number of people using sofas per photo", excelList)
     
-    workbook = Workbook()
-    sheet = workbook.add_sheet("peopleUsingChairs")
-    sheet.write(0, 0, "date")
-    sheet.write(0, 1, "number of people using sofaa")
+   
+def peopleUsingSmallTablesPerPhoto(photoList, workbook):
+    excelList = []
+    for photo in photoList:
+        totalPeopleUsingSmallTables = 0
+        for smallTable in photo.smallTableList:
+            totalPeopleUsingSmallTables += smallTable.numPeople
+        excelList.append((photo.exactDate, totalPeopleUsingSmallTables))
+        
+    writeToExcel(workbook, "peopleUsingSmallTables", "Date", "number of groups using small tables per photo", excelList)
+
     
-    r = 1
-    for item in excelList:
-        sheet.write(r, 0, item[0])
-        sheet.write(r, 1, item[1])
-        r += 1
+def peopleUsingLargeTablesPerPhoto(photoList, workbook):
+    excelList = []
+    for photo in photoList:
+        totalPeopleUsingLargeTables = 0
+        for largeTable in photo.largeTableList:
+            totalPeopleUsingLargeTables += largeTable.numPeople
+        excelList.append((photo.exactDate, totalPeopleUsingLargeTables))
     
-    workbook.save("C:\Users\Nicole\Documents\UROP 2013\peopleUsingSofasPerPhoto.xls")
+    writeToExcel(workbook, "peopleUsingLargeTables", "Date", "number of people using large tables per photo", excelList) 
+
+def groupsUsingSmallChairsPerPhoto(photoList, workbook):
+    excelList = []
+    for photo in photoList:
+        totalGroupsUsingChairs = 0
+        for chair in photo.chairList:
+            totalGroupsUsingChairs += chair.numGroups
+        excelList.append((photo.exactDate, totalGroupsUsingChairs))
+
+    writeToExcel(workbook, "groupsUsingChairs", "Date", "number of groups using chairs per photo", excelList)  
+    
+
+def groupsUsingSofasPerPhoto(photoList, workbook):
+    excelList = []
+    for photo in photoList:
+        totalGroupsUsingSofas = 0
+        for sofa in photo.sofaList:
+            totalGroupsUsingSofas += sofa.numGroups
+        excelList.append((photo.exactDate, totalGroupsUsingSofas))
+
+    writeToExcel(workbook, "groupsUsingSofas", "Date", "number of groups using sofas per photo", excelList)   
 
 
-readFiles("C:\Users\Nicole\Documents\UROP 2013\data")
+def groupsUsingSmallTablesPerPhoto(photoList, workbook):
+    excelList = []
+    for photo in photoList:
+        totalGroupsUsingSmallTables = 0
+        for smallTable in photo.smallTableList:
+            totalGroupsUsingSmallTables += smallTable.numGroups
+        excelList.append((photo.exactDate, totalGroupsUsingSmallTables))
+
+    writeToExcel(workbook, "groupsUsingSmallTables", "Date", "number of groups using small tables per photo", excelList)
+
+    
+def groupsUsingLargeTablesPerPhoto(photoList, workbook):
+    excelList = []
+    for photo in photoList:
+        totalGroupsUsingLargeTables = 0
+        for largeTable in photo.largeTableList:
+            totalGroupsUsingLargeTables += largeTable.numGroups
+        excelList.append((photo.exactDate, totalGroupsUsingLargeTables))
+
+    writeToExcel(workbook, "groupsUsingLargeTables", "Date", "number of groups using large tables per photo", excelList)
+    
+
+readFiles("C:\Users\Nicole\Documents\UROP2013\data")
