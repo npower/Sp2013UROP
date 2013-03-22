@@ -10,13 +10,6 @@ class Day:
 #stores info of a single photo      
 class Photo:
     def __init__(self, exactDate, dictList):
-##        month = ["", "Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
-##        stringMinutes = "00"
-##        if exactDate[4] < 2:
-##            stringMinutes = "0" + str(exactDate[4])
-##        else:
-##            stringMinutes = str(exactDate[4])
-##        self.exactDate = str(exactDate[0]) + " " + month[int(exactDate[1])] + " " + str(exactDate[2]) + " " + str(exactDate[3]) + ":" + stringMinutes
         self.exactDate = exactDate
         self.dictList = dictList
         self.numPeople = 0
@@ -32,11 +25,11 @@ class Photo:
     
     def addPerson(self, person):
         self.personList.append(person)
-        self.numPeople += 1
+        self.numPeople = len(set(self.personList))
     
     def addGroup(self, group):
         self.groupList.append(group)
-        self.numGroups += 1
+        self.numGroups = len(set(self.groupList))
 
     def addChair(self, chair):
         self.chairList.append(chair)
@@ -70,7 +63,7 @@ class Group:
         
     def addPerson(self, person):
         self.personList.append(person)
-        self.numPeople += 1
+        self.numPeople = len(set(self.personList))
         
     def isInGroup(self, thing):
         if thing.midX >= self.minX and thing.midX <= self.maxX and thing.midY >= self.minY and thing.midY <= self.maxY:
@@ -103,11 +96,11 @@ class Chair:
 
     def addPerson(self, person):
         self.personList.append(person)
-        self.numPeople += 1
+        self.numPeople = len(set(self.personList))
 
     def addGroup(self, group):
         self.groupList.append(group)
-        self.numGroups =+ 1
+        self.numGroups = len(set(self.groupList))
         
     def usingChair(self, person):
         if person.midX >= self.minX and person.midX <= self.maxX and person.midY >= self.minY and person.midY <= self.maxY:
@@ -128,11 +121,11 @@ class Sofa:
 
     def addPerson(self, person):
         self.personList.append(person)
-        self.numPeople += 1
+        self.numPeople = len(set(self.personList))
 
     def addGroup(self, group):
         self.groupList.append(group)
-        self.numGroups += 1
+        self.numGroups = len(set(self.groupList))
         
     def usingSofa(self, thing):
         if thing.midX >= self.minX and thing.midX <= self.maxX and thing.midY >= self.minY and thing.midY <= self.maxY:
@@ -153,11 +146,11 @@ class Small_Table:
 
     def addPerson(self, person):
         self.personList.append(person)
-        self.numPeople += 1
+        self.numPeople = len(set(self.personList))
 
     def addGroup(self, group):
         self.groupList.append(group)
-        self.numGroups += 1
+        self.numGroups = len(set(self.groupList))
         
     def usingSmallTable(self, thing):
         if thing.midX >= self.minX and thing.midX <= self.maxX and thing.midY >= self.minY and thing.midY <= self.maxY:
@@ -180,11 +173,11 @@ class Large_Table:
 
     def addPerson(self, person):
         self.personList.append(person)
-        self.numPeople += 1
-
+        self.numPeople = len(set(self.personList))
+        
     def addGroup(self, group):
         self.groupList.append(group)
-        self.numGroups += 1
+        self.numGroups = len(set(self.groupList))
         
     def usingLargeTable(self, thing):
         if thing.midX >= self.minX and thing.midX <= self.maxX and thing.midY >= self.minY and thing.midY <= self.maxY:
