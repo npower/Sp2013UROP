@@ -64,62 +64,62 @@ def readFiles(path):
         
     workbook = Workbook()
         
-    peoplePerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    peoplePerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
-    groupsPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)    
-    groupsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
-    averagePeoplePerGroupPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    averagePeoplePerGroupPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
+##    peoplePerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    peoplePerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
+##    groupsPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)    
+##    groupsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
+##    averagePeoplePerGroupPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    averagePeoplePerGroupPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
     peopleUsingSmallChairsPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    peopleUsingSmallChairsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
+##    peopleUsingSmallChairsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
     peopleUsingSofasPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    peopleUsingSofasPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
+##    peopleUsingSofasPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
     peopleUsingSmallTablesPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    peopleUsingSmallTablesPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
+##    peopleUsingSmallTablesPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
     groupsUsingSmallChairsPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    groupsUsingSmallChairsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
+##    groupsUsingSmallChairsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
     groupsUsingSofasPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    groupsUsingSofasPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
+##    groupsUsingSofasPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
     groupsUsingSmallTablesPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    groupsUsingSmallTablesPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
-    smallChairUtilizationPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    smallChairUtilizationPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-
-    sofaUtilizationPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    sofaUtilizationPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-
-    smallTableUtilizationPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    smallTableUtilizationPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
-    portionOfPeopleUsingFurniturePerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    portionOfPeopleUsingFurniturePerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
-    portionOfPeopleUsingSmallChairsPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    portionOfPeopleUsingSmallChairsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-
-    portionOfPeopleUsingSofasPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    portionOfPeopleUsingSofasPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-
-    portionOfPeopleUsingSmallTablesPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    portionOfPeopleUsingSmallTablesPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-    
-    portionOfGroupsUsingSmallChairsPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    portionOfGroupsUsingSmallChairsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-
-    portionOfGroupsUsingSofasPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    portionOfGroupsUsingSofasPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
-
-    portionOfGroupsUsingSmallTablesPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
-    portionOfGroupsUsingSmallTablesPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    groupsUsingSmallTablesPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
+##    smallChairUtilizationPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    smallChairUtilizationPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##
+##    sofaUtilizationPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    sofaUtilizationPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##
+##    smallTableUtilizationPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    smallTableUtilizationPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
+##    portionOfPeopleUsingFurniturePerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    portionOfPeopleUsingFurniturePerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
+##    portionOfPeopleUsingSmallChairsPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    portionOfPeopleUsingSmallChairsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##
+##    portionOfPeopleUsingSofasPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    portionOfPeopleUsingSofasPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##
+##    portionOfPeopleUsingSmallTablesPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    portionOfPeopleUsingSmallTablesPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    
+##    portionOfGroupsUsingSmallChairsPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    portionOfGroupsUsingSmallChairsPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##
+##    portionOfGroupsUsingSofasPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    portionOfGroupsUsingSofasPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
+##
+##    portionOfGroupsUsingSmallTablesPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
+##    portionOfGroupsUsingSmallTablesPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)
     
 ##    peopleUsingLargeTablesPerPhoto(allPhotoList, daytimePhotoList, nighttimeNoOutliersPhotoList, workbook)
 ##    peopleUsingLargeTablesPerDay(allPhotoList, daytimePhotoList, noOutliersPhotoList, daytimeNoOutliersPhotoList, nighttimeNoOutliersPhotoList, workbook)    
@@ -508,7 +508,7 @@ def A_using_B_per_Photo_Helper(photoList, getBList, getNumA):
     for photo in photoList:
         totalAinB = 0
         for b in getBList(photo):
-            totalAinB =+ getNumA(b)
+            totalAinB += getNumA(b)
         myList.append((photo.exactDate, totalAinB))    
     return myList
             
